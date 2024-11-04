@@ -33,21 +33,21 @@ jobs:
         shell: cmd
         run: |
           echo %LOCALAPPDATA% &&^
-          echo DESTDIR=%LOCALAPPDATA:\=/%/GnuCOBOL >> %GITHUB_OUTPUT%
+          echo MY_DEST_DIR=%LOCALAPPDATA:\=/%/GnuCOBOL >> %GITHUB_OUTPUT%
 
       - shell: cmd
-        run: echo ${{ steps.localappdata.outputs.LOCALAPPDATA }}
+        run: echo ${{ steps.localappdata.outputs.MY_DEST_DIR }}
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "${{ steps.localappdata.outputs.DESTDIR }}"
+          directory: "${{ steps.localappdata.outputs.MY_DEST_DIR }}"
           filename: "${{ env.targetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "${{ steps.localappdata.outputs.DESTDIR }}/${{ env.targetZip }}"
+          artifacts: "${{ steps.localappdata.outputs.MY_DEST_DIR }}/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
