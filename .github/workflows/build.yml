@@ -27,17 +27,21 @@ jobs:
       - name: installer
         shell: cmd
         run: start /wait .\installer.msi /qn
-          
+
+      - name: Set LOCALAPPDATA
+        id: localappdata-setter
+        run: echo LOCALAPPDATA=%LOCALAPPDATA% >> %GITHUB_OUTPUT%
+        
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "$LOCALAPPDATA/GnuCOBOL"
+          directory: "${{ steps.localappdata-setter.outputs.LOCALAPPDATA }}/GnuCOBOL"
           filename: "${{ env.targetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "$LOCALAPPDATA/GnuCOBOL/${{ env.targetZip }}"
+          artifacts: "${{ steps.localappdata-setter.outputs.LOCALAPPDATA }}/GnuCOBOL/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
