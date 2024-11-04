@@ -24,25 +24,30 @@ jobs:
           curl https://github.com/OCamlPro/superbol-artefacts/releases/download/gnucobol-3.2-aio-20240624/gnucobol-3.2-aio-20240624-user.msi -L --output installer.msi &&^
           dir
           
-      - name: installer
+      - name: install
         shell: cmd
         run: start /wait .\installer.msi /qn
 
       - name: Set LOCALAPPDATA
-        id: localappdata-setter
+        id: localappdata
         shell: cmd
-        run: echo LOCALAPPDATA=%LOCALAPPDATA% >> %GITHUB_OUTPUT%
+        run: |
+          echo %LOCALAPPDATA% &&^
+          echo LOCALAPPDATA=%LOCALAPPDATA:\=/% >> %GITHUB_OUTPUT%
+
+      - shell: cmd
+        run: echo ${{ steps.localappdata.outputs.LOCALAPPDATA }}
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "${{ steps.localappdata-setter.outputs.LOCALAPPDATA }}/GnuCOBOL"
+          directory: "${{ steps.localappdata.outputs.LOCALAPPDATA }}/GnuCOBOL"
           filename: "${{ env.targetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "${{ steps.localappdata-setter.outputs.LOCALAPPDATA }}/GnuCOBOL/${{ env.targetZip }}"
+          artifacts: "${{ steps.localappdata.outputs.LOCALAPPDATA }}/GnuCOBOL/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
