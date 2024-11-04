@@ -30,6 +30,7 @@ jobs:
 
       - name: Set LOCALAPPDATA
         id: localappdata-setter
+        shell: cmd
         run: echo LOCALAPPDATA=%LOCALAPPDATA% >> %GITHUB_OUTPUT%
         
       - name: Archive Release
