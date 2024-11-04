@@ -28,26 +28,26 @@ jobs:
         shell: cmd
         run: start /wait .\installer.msi /qn
 
-      - name: Set LOCALAPPDATA
-        id: localappdata
+      - name: Set MY_DEST_DIR
+        id: mydestdir
         shell: cmd
         run: |
           echo %LOCALAPPDATA% &&^
           echo MY_DEST_DIR=%LOCALAPPDATA:\=/%/GnuCOBOL >> %GITHUB_OUTPUT%
 
       - shell: cmd
-        run: echo ${{ steps.localappdata.outputs.MY_DEST_DIR }}
+        run: echo ${{ steps.mydestdir.outputs.MY_DEST_DIR }}
         
       - name: Archive Release
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          directory: "${{ steps.localappdata.outputs.MY_DEST_DIR }}"
+          directory: "${{ steps.mydestdir.outputs.MY_DEST_DIR }}"
           filename: "${{ env.targetZip }}"
           
       - name: Release prebuilt
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "${{ steps.localappdata.outputs.MY_DEST_DIR }}/${{ env.targetZip }}"
+          artifacts: "${{ steps.mydestdir.outputs.MY_DEST_DIR }}/${{ env.targetZip }}"
           allowUpdates: true
           token: ${{ secrets.GITHUB_TOKEN }}
