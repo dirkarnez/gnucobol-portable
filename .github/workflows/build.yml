@@ -33,7 +33,7 @@ jobs:
         shell: cmd
         run: |
           echo %LOCALAPPDATA% &&^
-          echo MY_DEST_DIR=%LOCALAPPDATA:\=/%/GnuCOBOL >> %GITHUB_OUTPUT%
+          echo MY_DEST_DIR=%LOCALAPPDATA:\=/%/GnuCOBOL>> %GITHUB_OUTPUT%
 
       - shell: cmd
         run: echo ${{ steps.mydestdir.outputs.MY_DEST_DIR }}
